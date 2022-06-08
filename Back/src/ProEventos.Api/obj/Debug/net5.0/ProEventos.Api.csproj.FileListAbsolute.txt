@@ -5,7 +5,6 @@ C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.Api\bin\
 C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.Api\bin\Debug\net5.0\ProEventos.Api.runtimeconfig.json
 C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.Api\bin\Debug\net5.0\ProEventos.Api.runtimeconfig.dev.json
 C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.Api\bin\Debug\net5.0\ProEventos.Api.dll
-C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.Api\bin\Debug\net5.0\ref\ProEventos.Api.dll
 C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.Api\bin\Debug\net5.0\ProEventos.Api.pdb
 C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.Api\bin\Debug\net5.0\Microsoft.OpenApi.dll
 C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.Api\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
@@ -27,3 +26,4 @@ C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.Api\obj\
 C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.Api\obj\Debug\net5.0\ref\ProEventos.Api.dll
 C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.Api\obj\Debug\net5.0\ProEventos.Api.pdb
 C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.Api\obj\Debug\net5.0\ProEventos.Api.genruntimeconfig.cache
+C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.Api\obj\Debug\net5.0\refint\ProEventos.Api.dll
