@@ -3,35 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using ProEventos.Api.Models;
+using ProEventos.API.Data;
+using ProEventos.API.Models;
 
-namespace ProEventos.Api.Controllers
+namespace ProEventos.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class EventoController : ControllerBase
     {
-        public EventoController()
+        private readonly DataContext _context;
+
+        public EventoController(DataContext context)
         {
+            _context = context;
         }
 
         [HttpGet]
         public IEnumerable<Evento> Get()
         {
-            return new Evento[]
-            {
-                new Evento
-                {
-                    Tema = "Angular 11",
-                    DataEvento = DateTime.Now.AddDays(7).ToString(),
-                    EventoId = 1,
-                    ImagemUrl = "",
-                    Local = "Aqui",
-                    Lote = "",
-                    QtdPessoas = 250
-                }
-            };
+            var eventos = _context.Eventos.ToList();
+            return eventos;
         }
     }
 }
