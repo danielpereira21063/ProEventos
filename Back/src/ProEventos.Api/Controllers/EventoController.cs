@@ -21,6 +21,16 @@ namespace ProEventos.API.Controllers
             _context = context;
         }
 
+        [HttpPost]
+        public ActionResult Post(IEnumerable<Evento> eventos)
+        {
+            foreach(var evento in eventos)
+            {
+                _context.Eventos.Add(evento);
+            }
+            return Ok();
+        }
+
         [HttpGet]
         public IEnumerable<Evento> Get()
         {
