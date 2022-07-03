@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AbstractControlOptions, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ValidatorField } from '@app/helpers/validatorField';
 
 @Component({
   selector: 'app-perfil',
@@ -7,9 +10,40 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PerfilComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private formBuilder: FormBuilder) { }
 
-  ngOnInit() {
+  public get f(): any {
+    return this.form.controls;
   }
 
+  public form!: FormGroup;
+
+  ngOnInit() {
+    this.validation();
+  }
+
+  public validation() {
+    const formOptions: AbstractControlOptions = {
+      validators: ValidatorField.MustMatch("senha", "confirmeSenha")
+    }
+
+    this.form = this.formBuilder.group({
+      titulo: ["", [Validators.required]],
+      primeiroNome: ["", [Validators.required]],
+      ultimoNome: ["", [Validators.required]],
+      email: ["", [Validators.required, Validators.email]],
+      userName: ["", [Validators.required]],
+      telefone: ["", [Validators.required]],
+      funcao: ["", [Validators.required]],
+      descricao: ["", [Validators.required]],
+      senha: ["", [Validators.required, Validators.minLength(6)]],
+      confirmeSenha: ["", Validators.required]
+    }, formOptions);
+  }
+
+  public resetForm(event: any): void {
+    event.preventDefault();
+    this.form.reset();
+  }
 }
