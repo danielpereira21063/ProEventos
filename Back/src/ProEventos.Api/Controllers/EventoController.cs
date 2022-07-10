@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProEventos.Application.Contratos;
-using ProEventos.Domain;
+using ProEventos.Application.Dtos;
 
 namespace ProEventos.API.Controllers
 {
@@ -18,16 +18,28 @@ namespace ProEventos.API.Controllers
             _eventoService = eventoService;
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> Post(Evento model)
+        public async Task<IActionResult> Post(EventoDto model)
         {
+
+            //if (50 < 60)
+            //{
+            //    Notificador.Notificar("50 é menor do que 60, animal!!!!");
+            //}
+
+            //Notificador.Notificar("Endereço inválido!!");
+
+
+            //return CustomResponse(teste);
+
             try
             {
                 var evento = await _eventoService.AddEventos(model);
 
                 if (evento == null)
                 {
-                    return BadRequest("Erro ao adicionar evento.");
+                    return NoContent();
                 }
 
                 return Ok(evento);
@@ -39,7 +51,7 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put(int id, Evento model)
+        public async Task<IActionResult> Put(int id, EventoDto model)
         {
             try
             {
@@ -47,7 +59,7 @@ namespace ProEventos.API.Controllers
 
                 if (evento == null)
                 {
-                    return BadRequest("Erro ao atualizar evento.");
+                    return NoContent();
                 }
 
                 return Ok(evento);
@@ -70,7 +82,7 @@ namespace ProEventos.API.Controllers
                 }
                 else
                 {
-                    return BadRequest("Evento para delete não encotrado.");
+                    return NoContent();
                 }
 
             }
@@ -86,10 +98,11 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                var eventos = await _eventoService.GetAllEventosAsync(true);
+                var eventos = await _eventoService.GetAllEventosAsync(includePalestranes: true);
+
                 if (eventos == null)
                 {
-                    return NotFound("Nenhum evento encontrado.");
+                    return NoContent();
                 }
 
                 return Ok(eventos);
@@ -108,7 +121,7 @@ namespace ProEventos.API.Controllers
                 var evento = await _eventoService.GetEventosByIdAsync(id, true);
                 if (evento == null)
                 {
-                    return NotFound("Evento não encontrado.");
+                    return NoContent();
                 }
 
                 return Ok(evento);
@@ -127,7 +140,7 @@ namespace ProEventos.API.Controllers
                 var eventos = await _eventoService.GetAllEventosByTemaAsync(tema, true);
                 if (eventos == null)
                 {
-                    return NotFound($"Eventos não encontrados para o tema {tema}.");
+                    return NoContent();
                 }
 
                 return Ok(eventos);

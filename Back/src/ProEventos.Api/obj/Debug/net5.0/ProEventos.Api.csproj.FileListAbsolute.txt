@@ -65,3 +65,5 @@ C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.API\bin\
 C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.API\bin\Debug\net5.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.API\bin\Debug\net5.0\Newtonsoft.Json.dll
 C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.API\bin\Debug\net5.0\Newtonsoft.Json.Bson.dll
+C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.API\bin\Debug\net5.0\AutoMapper.dll
+C:\Users\Daniel\Documents\Estudos\CSharp\ProEventos\Back\src\ProEventos.API\bin\Debug\net5.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
