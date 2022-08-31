@@ -9,11 +9,11 @@ namespace ProEventos.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EventoController : ControllerBase
+    public class EventosController : ControllerBase
     {
         private readonly IEventoService _eventoService;
 
-        public EventoController(IEventoService eventoService)
+        public EventosController(IEventoService eventoService)
         {
             _eventoService = eventoService;
         }
@@ -22,17 +22,6 @@ namespace ProEventos.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(EventoDto model)
         {
-
-            //if (50 < 60)
-            //{
-            //    Notificador.Notificar("50 é menor do que 60, animal!!!!");
-            //}
-
-            //Notificador.Notificar("Endereço inválido!!");
-
-
-            //return CustomResponse(teste);
-
             try
             {
                 var evento = await _eventoService.AddEventos(model);
@@ -50,7 +39,7 @@ namespace ProEventos.API.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, EventoDto model)
         {
             try
@@ -76,14 +65,13 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                if (await _eventoService.DeleteEvento(id))
-                {
-                    return Ok("Deletado");
-                }
-                else
-                {
-                    return NoContent();
-                }
+                return await _eventoService.DeleteEvento(id)
+                    ? Ok(new
+                    {
+                        message = "deletado",
+                        success = true
+                    })
+                    : throw new Exception("Ocorreu um erro desconhecido ao deletar o evento.");
 
             }
             catch (Exception ex)

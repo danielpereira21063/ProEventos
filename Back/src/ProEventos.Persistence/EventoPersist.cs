@@ -25,7 +25,8 @@ namespace ProEventos.Persistence
             {
                 query = query
                     .Include(x => x.PalestrantesEventos)
-                    .ThenInclude(x => x.Palestrante);
+                    .ThenInclude(x => x.Palestrante)
+                    .Include(x => x.Lotes);
             }
 
             query = query.OrderBy(x => x.Id);
@@ -63,6 +64,7 @@ namespace ProEventos.Persistence
             }
 
             query = query
+                .Include(x => x.Lotes)
                 .Where(x => x.Id == id);
 
             return await query.FirstOrDefaultAsync();

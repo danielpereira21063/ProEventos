@@ -9,7 +9,7 @@ import { take } from 'rxjs/operators';
 )
 
 export class EventoService {
-  private baseURL = "https://localhost:5001/api/evento";
+  private baseURL = "https://localhost:5001/api/eventos";
 
   constructor(private http: HttpClient) { }
 
@@ -19,13 +19,13 @@ export class EventoService {
       .pipe(take(1));
   }
 
-  public getEventosByTema(tema: string): Observable<Evento[]> {
+  public getEventosByTema(tema: String): Observable<Evento[]> {
     return this.http
       .get<Evento[]>(`${this.baseURL}/${tema}/tema`)
       .pipe(take(1));
   }
 
-  public getEventoById(id: number): Observable<Evento> {
+  public getEventoById(id: Number): Observable<Evento> {
     return this.http
       .get<Evento>(`${this.baseURL}/${id}`)
       .pipe(take(1));
