@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
@@ -78,6 +79,13 @@ export class EventoListaComponent implements OnInit {
     this.router.navigate([`eventos/detalhe/${id}`]);
     console.log(id)
   }
+
+  public mostraImagem(imagemUrl: string): string {
+    return (imagemUrl != "")
+      ? environment.apiUrl + '/resources/images/' + imagemUrl
+      : '/assets/img/semImagem.jpeg';
+  }
+
 
   public openModal($event: any, template: TemplateRef<any>, eventoId: number): void {
     $event.stopPropagation();

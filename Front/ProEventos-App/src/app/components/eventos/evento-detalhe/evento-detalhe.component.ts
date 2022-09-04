@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Evento } from '@app/models/Evento';
 import { LoteService } from '@app/services/lotes/lote.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-evento-detalhe',
@@ -23,6 +24,8 @@ export class EventoDetalheComponent implements OnInit {
   public form: FormGroup;
   public estadoSalvar = 'post';
   public loteAtual: { id: 0, nome: "", indice: number };
+  public imageURL = "assets/img/upload.png";
+  public file: File;
 
   ngOnInit(): void {
     this.validation();
@@ -90,14 +93,35 @@ export class EventoDetalheComponent implements OnInit {
       next: (evento: Evento) => {
         this.evento = { ...evento };
         this.form.patchValue(this.evento);
-        this.evento.lotes.forEach(x => {
-          this.lotes.push(this.criarLote(x));
-        });
+
+
+        if (this.evento.imagemUrl != "") {
+          this.imageURL = environment.apiUrl + '/resources/images/' + this.evento.imagemUrl;
+        }
+
+        this.carregarLotes();
       },
       error: (error: HttpErrorResponse) => {
         this.toast.error(error.message, "Erro ao tentar carregar evento");
       }
     }).add(() => this.spinner.hide())
+  }
+
+  public carregarLotes(): void {
+    this.loteService
+      .getLotesByEventoId(this.eventoId)
+      .subscribe(
+        (lotesRetorno: Lote[]) => {
+          lotesRetorno.forEach((lote) => {
+            this.lotes.push(this.criarLote(lote));
+          });
+        },
+        (error: any) => {
+          this.toast.error('Erro ao tentar carregar lotes', 'Erro');
+          console.error(error);
+        }
+      )
+      .add(() => this.spinner.hide());
   }
 
   public salvarEvento(): void {
@@ -116,7 +140,7 @@ export class EventoDetalheComponent implements OnInit {
         this.router.navigate([`/eventos/detalhe/${evento.id}`]);
       },
       error: (error: HttpErrorResponse) => {
-        this.toast.success(error.message, "Erro!");
+        this.toast.error(error.message, "Erro!");
       }
     }).add(() => this.spinner.hide())
   }
@@ -153,7 +177,7 @@ export class EventoDetalheComponent implements OnInit {
 
       qtdPessoas: ["", [Validators.required, Validators.maxLength(12000)]],
 
-      imagemUrl: ["", [Validators.required]],
+      imagemUrl: [""],
 
       telefone: ["", Validators.required],
 
@@ -203,7 +227,7 @@ export class EventoDetalheComponent implements OnInit {
     return nome == null || nome == "" ? 'Nome do lote' : nome;
   }
 
-  confirmDeleteLote(): void {
+  public confirmDeleteLote(): void {
     this.modalRef.hide();
     this.spinner.show();
 
@@ -213,12 +237,36 @@ export class EventoDetalheComponent implements OnInit {
         this.lotes.removeAt(this.loteAtual.indice);
       },
       (error: HttpErrorResponse) => {
-        this.toast.success(error.message, "Erro ao deletar lote!");
+        this.toast.error(error.message, "Erro ao deletar lote!");
       }
     ).add(() => this.spinner.hide())
   }
 
-  declineDeleteLote(): void {
+  public declineDeleteLote(): void {
     this.modalRef.hide();
+  }
+
+  public onFileChange(ev: any): void {
+    var reader = new FileReader();
+
+    reader.onload = (event: any) => this.imageURL = event.target.result
+
+    this.file = ev.target.files[0];
+    reader.readAsDataURL(this.file);
+
+    this.uploadImage();
+  }
+
+  public uploadImage(): void {
+    this.spinner.show();
+    this.eventoService.postUpload(this.eventoId, this.file).subscribe(
+      () => {
+        this.carregarEvento();
+        this.toast.success("Imagem alterada com sucesso", "Sucesso!");
+      },
+      (error: HttpErrorResponse) => {
+        this.toast.error(error.message, "Erro");
+      }
+    ).add(this.spinner.hide());
   }
 }
