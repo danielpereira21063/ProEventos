@@ -1,12 +1,14 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProEventos.Application.Contratos;
 using ProEventos.Application.Dtos;
+using System;
+using System.Threading.Tasks;
 
 namespace ProEventos.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class LotesController : ControllerBase
@@ -47,10 +49,10 @@ namespace ProEventos.API.Controllers
                 var lote = await _loteService.GetLoteByIds(eventoId, loteId);
                 return await _loteService.DeleteLote(lote.EventoId, loteId)
                     ? Ok(new
-                      {
-                          message = "deletado",
-                          success = true
-                      })
+                    {
+                        message = "deletado",
+                        success = true
+                    })
                     : throw new Exception("Ocorreu um erro desconhecido ao deletar o lote.");
 
             }
