@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace ProEventos.API.Controllers
 {
-    [Authorize]
     [ApiController]
-    [Route("api/controller")]
+    [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
@@ -80,7 +79,11 @@ namespace ProEventos.API.Controllers
 
                 if (user != null)
                 {
-                    return Ok(user);
+                    return Ok(new {
+                        primeiroNome = user.PrimeiroNome,
+                        token = _tokenService.CreateToken(user).Result,
+                        userName = user.UserName
+                    });
                 }
 
                 return BadRequest("Erro ao registrar usuário, tente novamente mais tarde.");
@@ -97,6 +100,11 @@ namespace ProEventos.API.Controllers
         {
             try
             {
+                if(userUpdateDto.UserName != User.GetUserName())
+                {
+                    return Unauthorized("Usuário inválido.");
+                }
+
                 var user = await _accountService.GetUserByUserNameAsync(User.GetUserName());
 
                 if (user == null) return Unauthorized("Usuário inválido");
@@ -105,7 +113,12 @@ namespace ProEventos.API.Controllers
 
                 if (userUpdated == null) return BadRequest("Erro ao atualizar informações do usuário, tente novamente mais tarde.");
 
-                return Ok(userUpdated);
+                return Ok(new
+                {
+                    primeiroNome = userUpdated.PrimeiroNome,
+                    token = _tokenService.CreateToken(user).Result,
+                    userName = userUpdated.UserName
+                });
             }
             catch (System.Exception ex)
             {

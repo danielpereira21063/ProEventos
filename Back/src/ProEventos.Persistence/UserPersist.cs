@@ -24,7 +24,7 @@ namespace ProEventos.Persistence
 
         public async Task<User> GetUserByUserNameAsync(string userName)
         {
-            return await _context.Users.SingleOrDefaultAsync(x => x.UserName.Contains(userName));
+            return await _context.Users.FirstOrDefaultAsync(x => x.UserName.Equals(userName));
         }
 
         public async Task<IEnumerable<User>> GetUsersAsync()

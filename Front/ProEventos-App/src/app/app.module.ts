@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -33,6 +33,9 @@ import { UserComponent } from './components/user/user.component';
 import { LoginComponent } from './components/user/login/login.component';
 import { RegistrationComponent } from './components/user/registration/registration.component';
 import { LoteService } from './services/lotes/lote.service';
+import { AccountService } from './services/account/account.service';
+import { JwtInterceptor } from './interceptors/jwt.interceptor';
+import { HomeComponent } from './components/home/home.component';
 
 defineLocale('pt-br', ptBrLocale);
 
@@ -45,6 +48,7 @@ defineLocale('pt-br', ptBrLocale);
     PalestrantesComponent,
     ContatosComponent,
     DashboardComponent,
+    HomeComponent,
     PerfilComponent,
     DateTimeFormatPipe,
     EventoListaComponent,
@@ -76,7 +80,9 @@ defineLocale('pt-br', ptBrLocale);
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
     EventoService,
-    LoteService
+    LoteService,
+    AccountService,
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
   ],
   bootstrap: [
     AppComponent

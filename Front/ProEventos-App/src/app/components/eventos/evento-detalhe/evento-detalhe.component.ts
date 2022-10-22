@@ -10,6 +10,8 @@ import { Evento } from '@app/models/Evento';
 import { LoteService } from '@app/services/lotes/lote.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { environment } from 'src/environments/environment';
+import { DatePipe } from '@angular/common';
+import { DateTimeFormatPipe } from '@app/helpers/DateTimeFormat.pipe';
 
 @Component({
   selector: 'app-evento-detalhe',
@@ -115,6 +117,7 @@ export class EventoDetalheComponent implements OnInit {
           lotesRetorno.forEach((lote) => {
             this.lotes.push(this.criarLote(lote));
           });
+          console.log(lotesRetorno)
         },
         (error: any) => {
           this.toast.error('Erro ao tentar carregar lotes', 'Erro');
@@ -225,6 +228,13 @@ export class EventoDetalheComponent implements OnInit {
 
   public retornaTituloLote(nome: string): string {
     return nome == null || nome == "" ? 'Nome do lote' : nome;
+  }
+
+
+  public formatarDataLote(i: number): any{
+    console.log(this.lotes.controls[i].value)
+    this.lotes.controls[i].value;
+    return "23-01-2001";
   }
 
   public confirmDeleteLote(): void {

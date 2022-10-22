@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "8zlNN5DX/4FKe5LK6Y2ntIUnU5hfwBW3RxDLH6XqJcr3NDJo9nEgOXZCoWSu73C2CydoktghxOoHzmUhqEk/tg==",
+  "dgSpecHash": "fNQn/+aB/cqzYBaj8cY5PUXMehxZa516731yWJv7geeJIIlWYhiyNl3Z2JZ6668xrO6ARk0lQSUvXlc+3G+42Q==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Daniel\\Documents\\Estudos\\CSharp\\ProEventos\\Back\\src\\ProEventos.API\\ProEventos.API.csproj",
+  "projectFilePath": "D:\\Estudos\\CursosUdemy\\ProEventos\\Back\\src\\ProEventos.API\\ProEventos.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Daniel\\.nuget\\packages\\automapper\\10.1.1\\automapper.10.1.1.nupkg.sha512",
     "C:\\Users\\Daniel\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\8.1.1\\automapper.extensions.microsoft.dependencyinjection.8.1.1.nupkg.sha512",

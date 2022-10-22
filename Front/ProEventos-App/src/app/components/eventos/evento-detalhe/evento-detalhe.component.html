@@ -31,7 +31,7 @@
             </div>
             <div class="form-group col-md-4">
               <label>Data e Hora</label>
-              <input type="datetime" class="form-control" bsDatepicker value="{{evento.dataEvento | DateFormatPipe}}"
+              <input type="datetime" class="form-control" bsDatepicker value="{{evento.dataEvento}}"
                 [bsConfig]="bsConfig" [(ngModel)]="evento.dataEvento" [ngClass]="cssValidator(f.dataEvento)" formControlName="dataEvento"
                 placeholder="">
               <div class="invalid-feedback" *ngIf="f.dataEvento.errors?.required && f.dataEvento.touched">
@@ -134,7 +134,7 @@
                     <label>Data Início</label>
                     <input [ngClass]="cssValidator(lotes.get(i+'.dataInicio'))" type="datetime" class="form-control"
                       placeholder="01/01/2019" bsDatepicker
-                      value="{{lotes.get(i+'.dataInicio')?.value | date:'dd/MM/yyyy' }}"
+                      value="{{lotes.get(i+'.dataFim')?.value}}"
                       (bsValueChange)="mudarValorData($event, i, 'dataInicio')">
                     <div class="invalid-feedback">Este campo é obrigatório</div>
                   </div>
@@ -144,7 +144,7 @@
                     <label>Data Fim</label>
                     <input [ngClass]="cssValidator(lotes.get(i+'.dataFim'))" type="datetime" class="form-control"
                       placeholder="01/01/2019" bsDatepicker
-                      value="{{lotes.get(i+'.dataFim')?.value | date:'dd/MM/yyyy' }}"
+                      value="{{lotes.get(i+'.dataFim')?.value}}"
                       (bsValueChange)="mudarValorData($event, i, 'dataFim')">
                     <div class="invalid-feedback">Este campo é obrigatório</div>
                   </div>
@@ -190,7 +190,7 @@
           <p class="card-text">
             <b>Local:</b> {{evento.local}}
             <br>
-            <b>Data:</b> {{evento.dataEvento | DateFormatPipe}}
+            <b>Data:</b> {{evento.dataEvento}}
           </p>
           <hr>
           <p class="card-text">

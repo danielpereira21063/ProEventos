@@ -268,10 +268,10 @@ namespace ProEventos.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("DateFim")
+                    b.Property<DateTime?>("DataFim")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("DateInicio")
+                    b.Property<DateTime?>("DataInicio")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("EventoId")

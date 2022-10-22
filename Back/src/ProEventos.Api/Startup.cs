@@ -89,7 +89,7 @@ namespace ProEventos.API
             services.AddScoped<IUserPersist, UserPersist>();
 
 
-            services.AddCors();
+            services.AddCors(/*c=> c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin())*/);
 
             services.AddSwaggerGen(options =>
             {
@@ -135,8 +135,6 @@ namespace ProEventos.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProEventos.Api v1"));
             }
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
 
             app.UseAuthentication();
@@ -148,6 +146,8 @@ namespace ProEventos.API
                 x.AllowAnyMethod();
                 x.AllowAnyOrigin();
             });
+
+            app.UseHttpsRedirection();
 
             app.UseStaticFiles(new StaticFileOptions()
             {
