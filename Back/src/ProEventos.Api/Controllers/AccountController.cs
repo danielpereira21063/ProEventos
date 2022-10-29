@@ -79,7 +79,8 @@ namespace ProEventos.API.Controllers
 
                 if (user != null)
                 {
-                    return Ok(new {
+                    return Ok(new
+                    {
                         primeiroNome = user.PrimeiroNome,
                         token = _tokenService.CreateToken(user).Result,
                         userName = user.UserName
@@ -100,7 +101,7 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                if(userUpdateDto.UserName != User.GetUserName())
+                if (userUpdateDto.UserName != User.GetUserName())
                 {
                     return Unauthorized("Usuário inválido.");
                 }

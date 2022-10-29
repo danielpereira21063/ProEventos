@@ -7,6 +7,9 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { Evento } from 'src/app/models/Evento';
 import { EventoService } from 'src/app/services/eventos/evento.service';
+import { PaginatedResult, Pagination } from '@app/models/Pagination';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-evento-lista',
@@ -22,7 +25,9 @@ export class EventoListaComponent implements OnInit {
   public marginImage: number = 2;
   public showImage: boolean = true;
   public eventoId: number;
-  private filtroListado: string = "";
+  public pagination = {} as Pagination;
+
+  public termoBuscaChanged: Subject<string> = new Subject<string>();
 
   constructor(
     private eventoService: EventoService,
@@ -34,41 +39,60 @@ export class EventoListaComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.pagination = {
+      currentPage: 1,
+      itemsPerPage: 3,
+      totalItems: 1,
+    } as Pagination;
+
     this.carregarEventos();
-    this.spinner.show();
   }
 
-  public get filtroLista() {
-    return this.filtroListado;
+  public filtrarEventos(evt: any): void {
+    if (this.termoBuscaChanged.observers.length === 0) {
+
+      this.termoBuscaChanged.pipe(debounceTime(250)).subscribe(
+        filtrarPor => {
+          this.spinner.show();
+          this.eventoService.getEventos(this.pagination.currentPage, this.pagination.itemsPerPage, filtrarPor)
+            .subscribe({
+              next: (paginatedResult: PaginatedResult<Evento[]>) => {
+                this.eventos = paginatedResult.result;
+                this.eventosFiltrados = this.eventos;
+                this.pagination = paginatedResult.pagination;
+              },
+              error: (error: HttpErrorResponse) => {
+                this.spinner.hide();
+                this.toastr.error(error.message, "Erro");
+              }
+            }).add(this.spinner.hide());
+        }
+      );
+    }
+    this.termoBuscaChanged.next(evt.value);
   }
 
-  public set filtroLista(value: string) {
-    this.filtroListado = value;
-    this.eventosFiltrados = this.filtroLista ? this.filtrarEventos(value) : this.eventos;
-  }
-
-  public filtrarEventos(filtrarPor: string): Evento[] {
-    filtrarPor = filtrarPor.toLowerCase();
-    return this.eventos.filter((evento: Evento) => evento.tema.toLowerCase().indexOf(filtrarPor) != -1);
+  public pageChanged(event: any): void {
+    this.pagination.currentPage = event.page;
+    this.carregarEventos();
   }
 
   public carregarEventos(): void {
+    this.spinner.show();
+
     this.eventoService
-      .getEventos()
+      .getEventos(this.pagination.currentPage, this.pagination.itemsPerPage)
       .subscribe({
-        next: (eventos: Evento[]) => {
-          this.eventos = eventos;
+        next: (paginatedResult: PaginatedResult<Evento[]>) => {
+          this.eventos = paginatedResult.result;
           this.eventosFiltrados = this.eventos;
+          this.pagination = paginatedResult.pagination;
         },
         error: (error: HttpErrorResponse) => {
           this.spinner.hide();
           this.toastr.error(error.message, "Erro");
-          console.log(error);
-        },
-        complete: () => {
-          this.spinner.hide();
         }
-      })
+      }).add(this.spinner.hide());
   }
 
   public alterarImagem(): void {
@@ -77,7 +101,6 @@ export class EventoListaComponent implements OnInit {
 
   public detalheEvento(id: number): void {
     this.router.navigate([`eventos/detalhe/${id}`]);
-    console.log(id)
   }
 
   public mostraImagem(imagemUrl: string): string {
@@ -99,7 +122,6 @@ export class EventoListaComponent implements OnInit {
 
     this.eventoService.deleteEvento(this.eventoId).subscribe({
       next: (result: any) => {
-        console.log(result);
         if (result.success) {
           this.toastr.success("Evento deletado com sucesso", "Deletado!");
           this.spinner.hide();

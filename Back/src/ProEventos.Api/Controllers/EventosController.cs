@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProEventos.API.Extensions;
 using ProEventos.Application.Contratos;
 using ProEventos.Application.Dtos;
+using ProEventos.Persistence.Models;
 using System;
 using System.IO;
 using System.Linq;
@@ -125,16 +126,18 @@ namespace ProEventos.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] PageParams pageParams)
         {
             try
             {
-                var eventos = await _eventoService.GetAllEventosAsync(User.GetUserId(), includePalestranes: true);
+                var eventos = await _eventoService.GetAllEventosAsync(User.GetUserId(), pageParams, includePalestranes: true);
 
                 if (eventos == null)
                 {
                     return NoContent();
                 }
+
+                Response.AddPagination(eventos.CurrentPage, eventos.PageSize, eventos.TotalCount, eventos.TotalPages);
 
                 return Ok(eventos);
             }
@@ -163,24 +166,24 @@ namespace ProEventos.API.Controllers
             }
         }
 
-        [HttpGet("{tema}/tema")]
-        public async Task<IActionResult> GetByTema(string tema)
-        {
-            try
-            {
-                var eventos = await _eventoService.GetAllEventosByTemaAsync(User.GetUserId(), tema, true);
-                if (eventos == null)
-                {
-                    return NoContent();
-                }
+        //[HttpGet("{tema}/tema")]
+        //public async Task<IActionResult> GetByTema(string tema)
+        //{
+        //    try
+        //    {
+        //        var eventos = await _eventoService.GetAllEventosByTemaAsync(User.GetUserId(), tema, true);
+        //        if (eventos == null)
+        //        {
+        //            return NoContent();
+        //        }
 
-                return Ok(eventos);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao tentar recuperar eventos. \n{ex.Message}");
-            }
-        }
+        //        return Ok(eventos);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao tentar recuperar eventos. \n{ex.Message}");
+        //    }
+        //}
 
         [NonAction]
         public async Task<string> SaveImage(IFormFile imageFile)

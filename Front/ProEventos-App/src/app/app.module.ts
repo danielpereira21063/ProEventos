@@ -15,6 +15,8 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { ptBrLocale } from 'ngx-bootstrap/locale';
 
+import { PaginationModule } from 'ngx-bootstrap/pagination';
+
 import { DateTimeFormatPipe } from './helpers/DateTimeFormat.pipe';
 
 import { EventoService } from './services/eventos/evento.service';
@@ -75,7 +77,8 @@ defineLocale('pt-br', ptBrLocale);
       preventDuplicates: true,
     }),
     NgxSpinnerModule,
-    NgxCurrencyModule
+    NgxCurrencyModule,
+    PaginationModule.forRoot()
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [

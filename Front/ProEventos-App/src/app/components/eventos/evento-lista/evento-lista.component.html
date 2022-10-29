@@ -4,7 +4,7 @@
       <div class="input-group mb-2">
         <div class="input-group-prepend w-100">
           <div class="input-group-text" for="">Filtro: </div>
-          <input type="text" class="form-control mr-2" placeholder="Filtrar por tema e local" [(ngModel)]="filtroLista">
+          <input type="text" class="form-control mr-2" placeholder="Filtrar por tema e local" (input)="filtrarEventos($event.target)">
         </div>
       </div>
     </div>
@@ -47,7 +47,8 @@
         <td class="d-none d-md-table-cell">{{evento.qtdPessoas}}</td>
         <td class="d-none d-md-table-cell">{{evento.lotes[0]?.nome | uppercase}}</td>
         <td>
-          <button class="btn btn-sm btn-primary d-none d-md-table-cell" tooltip="Editar"><i class="fa fa-edit"></i></button>
+          <button class="btn btn-sm btn-primary d-none d-md-table-cell" tooltip="Editar"><i
+              class="fa fa-edit"></i></button>
           &nbsp;
           <button class="btn btn-sm btn-danger" tooltip="Excluir" (click)="openModal($event, template, evento.id)"><i
               class="fa fa-trash"></i></button>
@@ -62,6 +63,15 @@
       </tr>
     </tfoot>
   </table>
+
+  <div class="d-flex justify-content-center">
+    <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems" [itemsPerPage]="pagination.itemsPerPage"
+      [(ngModel)]="pagination.currentPage" (pageChanged)="pageChanged($event)" pageBtnClass="btn"
+      previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+
+    </pagination>
+  </div>
+
 </div>
 
 <ng-template #template>

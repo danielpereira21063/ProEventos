@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProEventos.Domain;
-using ProEventos.Domain.Identity;
 using ProEventos.Persistence.Contextos;
 using ProEventos.Persistence.Contratos;
+using ProEventos.Persistence.Models;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,26 +18,7 @@ namespace ProEventos.Persistence
             _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
-        public async Task<Evento[]> GetAllEventosAsync(int userId, bool includePalestranes = false)
-        {
-            IQueryable<Evento> query = _context.Eventos
-                .AsNoTracking()
-                .Where(u => u.UserId == userId); ;
-
-            if (includePalestranes)
-            {
-                query = query
-                    .Include(x => x.PalestrantesEventos)
-                    .ThenInclude(x => x.Palestrante)
-                    .Include(x => x.Lotes);
-            }
-
-            query = query.OrderBy(x => x.Id);
-
-            return await query.ToArrayAsync();
-        }
-
-        public async Task<Evento[]> GetAllEventosByTemaAsync(int userId, string tema, bool includePalestranes)
+        public async Task<PageList<Evento>> GetAllEventosAsync(int userId, PageParams pageParams, bool includePalestranes)
         {
             IQueryable<Evento> query = _context.Eventos
                 .AsNoTracking();
@@ -50,10 +31,12 @@ namespace ProEventos.Persistence
             }
 
             query = query
-                .OrderBy(x => x.Id)
-                .Where(x => x.Tema.ToLower().Contains(tema.ToLower()) && x.UserId == userId);
+                .OrderBy(evento => evento.Id)
+                .Where(evento =>
+                    evento.UserId == userId
+                    && (evento.Tema.ToLower().Contains(pageParams.Term.ToLower()) || evento.Local.ToLower().Contains(pageParams.Term.ToLower())));
 
-            return await query.ToArrayAsync();
+            return await PageList<Evento>.CreateAsync(query, pageParams.PageNumber, pageParams.pageSize);
         }
 
         public async Task<Evento> GetEventosByIdAsync(int userId, int id, bool includePalestranes)

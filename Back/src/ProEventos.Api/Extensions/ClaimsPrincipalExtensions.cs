@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;using System.Security.Claims;
+﻿using System.Security.Claims;
 
 namespace ProEventos.API.Extensions
 {
