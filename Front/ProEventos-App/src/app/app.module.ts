@@ -38,6 +38,8 @@ import { LoteService } from './services/lotes/lote.service';
 import { AccountService } from './services/account/account.service';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { HomeComponent } from './components/home/home.component';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { PerfilDetalheComponent } from './components/user/perfil/perfil-detalhe/perfil-detalhe.component';
 
 defineLocale('pt-br', ptBrLocale);
 
@@ -57,7 +59,8 @@ defineLocale('pt-br', ptBrLocale);
     EventoDetalheComponent,
     UserComponent,
     LoginComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    PerfilDetalheComponent
   ],
   imports: [
     BrowserModule,
@@ -78,7 +81,8 @@ defineLocale('pt-br', ptBrLocale);
     }),
     NgxSpinnerModule,
     NgxCurrencyModule,
-    PaginationModule.forRoot()
+    PaginationModule.forRoot(),
+    TabsModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
