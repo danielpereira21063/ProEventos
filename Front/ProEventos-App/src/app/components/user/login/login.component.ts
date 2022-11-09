@@ -1,14 +1,13 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { UserLogin } from '../../../models/identity/UserLogin';
+import { AccountService } from '../../../services/account.service';
 import { Router } from '@angular/router';
-import { UserLogin } from '@app/models/identity/UserLogin';
-import { AccountService } from '@app/services/account/account.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
   model = {} as UserLogin;
@@ -16,22 +15,21 @@ export class LoginComponent implements OnInit {
   constructor(
     private accountService: AccountService,
     private router: Router,
-    private toastr: ToastrService
-  ) { }
+    private toaster: ToastrService
+  ) {}
 
-
-  ngOnInit(): void { }
-
+  ngOnInit(): void {}
 
   public login(): void {
     this.accountService.login(this.model).subscribe(
       () => {
-        this.router.navigateByUrl("/dashboard");
+        this.router.navigateByUrl('/dashboard');
       },
-      (response: HttpErrorResponse) => {
-        this.toastr.error(response.error, "Erro ao fazer login!");
+      (error: any) => {
+        if (error.status == 401)
+          this.toaster.error('usuário ou senha inválido');
+        else console.error(error);
       }
     );
   }
-
 }

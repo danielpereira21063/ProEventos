@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ProEventos.Persistence.Migrations
 {
@@ -20,15 +20,15 @@ namespace ProEventos.Persistence.Migrations
                 table: "Palestrantes");
 
             migrationBuilder.DropColumn(
+                name: "ImagemURL",
+                table: "Palestrantes");
+
+            migrationBuilder.DropColumn(
                 name: "Nome",
                 table: "Palestrantes");
 
             migrationBuilder.DropColumn(
                 name: "Telefone",
-                table: "Palestrantes");
-
-            migrationBuilder.DropColumn(
-                name: "imagemUrl",
                 table: "Palestrantes");
 
             migrationBuilder.AddColumn<int>(
@@ -37,17 +37,6 @@ namespace ProEventos.Persistence.Migrations
                 type: "INTEGER",
                 nullable: false,
                 defaultValue: 0);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Tema",
-                table: "Eventos",
-                type: "TEXT",
-                maxLength: 50,
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "TEXT",
-                oldNullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "UserId",
@@ -82,7 +71,7 @@ namespace ProEventos.Persistence.Migrations
                     Titulo = table.Column<int>(type: "INTEGER", nullable: false),
                     Descricao = table.Column<string>(type: "TEXT", nullable: true),
                     Funcao = table.Column<int>(type: "INTEGER", nullable: false),
-                    ImagemUrl = table.Column<string>(type: "TEXT", nullable: true),
+                    ImagemURL = table.Column<string>(type: "TEXT", nullable: true),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
@@ -215,6 +204,11 @@ namespace ProEventos.Persistence.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Eventos_UserId",
+                table: "Eventos",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
@@ -252,6 +246,14 @@ namespace ProEventos.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.AddForeignKey(
+                name: "FK_Eventos_AspNetUsers_UserId",
+                table: "Eventos",
+                column: "UserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_Palestrantes_AspNetUsers_UserId",
                 table: "Palestrantes",
                 column: "UserId",
@@ -278,6 +280,10 @@ namespace ProEventos.Persistence.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Eventos_AspNetUsers_UserId",
+                table: "Eventos");
+
             migrationBuilder.DropForeignKey(
                 name: "FK_Palestrantes_AspNetUsers_UserId",
                 table: "Palestrantes");
@@ -315,6 +321,10 @@ namespace ProEventos.Persistence.Migrations
                 name: "IX_Palestrantes_UserId",
                 table: "Palestrantes");
 
+            migrationBuilder.DropIndex(
+                name: "IX_Eventos_UserId",
+                table: "Eventos");
+
             migrationBuilder.DropColumn(
                 name: "UserId",
                 table: "Palestrantes");
@@ -330,6 +340,12 @@ namespace ProEventos.Persistence.Migrations
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
+                name: "ImagemURL",
+                table: "Palestrantes",
+                type: "TEXT",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
                 name: "Nome",
                 table: "Palestrantes",
                 type: "TEXT",
@@ -340,21 +356,6 @@ namespace ProEventos.Persistence.Migrations
                 table: "Palestrantes",
                 type: "TEXT",
                 nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "imagemUrl",
-                table: "Palestrantes",
-                type: "TEXT",
-                nullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Tema",
-                table: "Eventos",
-                type: "TEXT",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "TEXT",
-                oldMaxLength: 50);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_RedesSociais_Eventos_EventoId",

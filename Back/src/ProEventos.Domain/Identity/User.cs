@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using ProEventos.Domain.Enum;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using ProEventos.Domain.Enum;
 
 namespace ProEventos.Domain.Identity
 {
@@ -11,7 +14,7 @@ namespace ProEventos.Domain.Identity
         public Titulo Titulo { get; set; }
         public string Descricao { get; set; }
         public Funcao Funcao { get; set; }
-        public string ImagemUrl { get; set; }
+        public string ImagemURL { get; set; }
         public IEnumerable<UserRole> UserRoles { get; set; }
     }
 }

@@ -1,4 +1,9 @@
-﻿namespace ProEventos.Application.Dtos
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ProEventos.Application.Dtos
 {
     public class UserUpdateDto
     {
@@ -11,8 +16,8 @@
         public string PhoneNumber { get; set; }
         public string Funcao { get; set; }
         public string Descricao { get; set; }
-        public string ImagemUrl { get; set; }
         public string Password { get; set; }
         public string Token { get; set; }
+        public string ImagemURL { get; set; }
     }
 }

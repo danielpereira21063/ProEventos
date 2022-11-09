@@ -1,5 +1,8 @@
-﻿using ProEventos.Application.Dtos;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using ProEventos.Application.Dtos;
 
 namespace ProEventos.Application.Contratos
 {
@@ -7,12 +10,14 @@ namespace ProEventos.Application.Contratos
     {
         Task<RedeSocialDto[]> SaveByEvento(int eventoId, RedeSocialDto[] models);
         Task<bool> DeleteByEvento(int eventoId, int redeSocialId);
+
         Task<RedeSocialDto[]> SaveByPalestrante(int palestranteId, RedeSocialDto[] models);
         Task<bool> DeleteByPalestrante(int palestranteId, int redeSocialId);
+
         Task<RedeSocialDto[]> GetAllByEventoIdAsync(int eventoId);
-        Task<RedeSocialDto[]> GetAllByPalestranteAsync(int palestranteId);
-        Task<RedeSocialDto> GetRedeSocialEventoByIdsAsync(int eventoId, int redeSocialId);
-        Task<RedeSocialDto> GetRedeSocialPalestranteByIdsAsync(int palestranteId, int redeSocialId);
-        Task<RedeSocialDto> AddRedeSocial(int idPalestranteOuEvento, RedeSocialDto model, bool isEvento);
+        Task<RedeSocialDto[]> GetAllByPalestranteIdAsync(int palestranteId);
+
+        Task<RedeSocialDto> GetRedeSocialEventoByIdsAsync(int eventoId, int RedeSocialId);
+        Task<RedeSocialDto> GetRedeSocialPalestranteByIdsAsync(int PalestranteId, int RedeSocialId);
     }
 }

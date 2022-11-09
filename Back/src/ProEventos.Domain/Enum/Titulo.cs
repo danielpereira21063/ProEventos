@@ -1,4 +1,4 @@
-﻿namespace ProEventos.Domain.Enum
+namespace ProEventos.Domain.Enum
 {
     public enum Titulo
     {

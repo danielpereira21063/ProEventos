@@ -1,17 +1,16 @@
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { Evento } from './../models/Evento';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Evento } from '@app/models/Evento';
 import { take, map } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
+import { environment } from '@environments/environment';
 import { PaginatedResult } from '@app/models/Pagination';
 
 @Injectable(
-  /*{providedIn: "root"}*/
+// { providedIn: 'root'}
 )
-
 export class EventoService {
-  private baseURL = `${environment.apiUrl}/api/eventos`;
+  baseURL = environment.apiURL + 'api/eventos';
 
   constructor(private http: HttpClient) { }
 
@@ -25,30 +24,23 @@ export class EventoService {
       params = params.append('pageSize', itemsPerPage.toString());
     }
 
-    if(term != null && term != ""){
-      params = params.append("term", term);
-    }
+    if (term != null && term != '')
+      params = params.append('term', term)
 
     return this.http
-      .get<Evento[]>(this.baseURL, { observe: 'response', params })
+      .get<Evento[]>(this.baseURL, {observe: 'response', params })
       .pipe(
         take(1),
         map((response) => {
-          paginatedResult.result = response.body ?? [];
-          if (response.headers.has('Pagination')) {
-            paginatedResult.pagination = JSON.parse(response.headers.get('Pagination') ?? "{}");
+          paginatedResult.result = response.body;
+          if(response.headers.has('Pagination')) {
+            paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));
           }
           return paginatedResult;
         }));
   }
 
-  public getEventosByTema(tema: String): Observable<Evento[]> {
-    return this.http
-      .get<Evento[]>(`${this.baseURL}/${tema}/tema`)
-      .pipe(take(1));
-  }
-
-  public getEventoById(id: Number): Observable<Evento> {
+  public getEventoById(id: number): Observable<Evento> {
     return this.http
       .get<Evento>(`${this.baseURL}/${id}`)
       .pipe(take(1));
@@ -56,7 +48,7 @@ export class EventoService {
 
   public post(evento: Evento): Observable<Evento> {
     return this.http
-      .post<Evento>(`${this.baseURL}`, evento)
+      .post<Evento>(this.baseURL, evento)
       .pipe(take(1));
   }
 
@@ -72,10 +64,10 @@ export class EventoService {
       .pipe(take(1));
   }
 
-  public postUpload(eventoId: number, file: File): Observable<Evento> {
+  postUpload(eventoId: number, file: File): Observable<Evento> {
+    const fileToUpload = file[0] as File;
     const formData = new FormData();
-
-    formData.append('file', file);
+    formData.append('file', fileToUpload);
 
     return this.http
       .post<Evento>(`${this.baseURL}/upload-image/${eventoId}`, formData)

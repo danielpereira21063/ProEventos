@@ -1,4 +1,4 @@
-﻿namespace ProEventos.Application.Dtos
+namespace ProEventos.Application.Dtos
 {
     public class LoteDto
     {
@@ -9,6 +9,6 @@
         public string DataFim { get; set; }
         public int Quantidade { get; set; }
         public int EventoId { get; set; }
-        //public EventoDto Evento { get; set; }
+        public EventoDto EventoDto { get; set; }
     }
 }

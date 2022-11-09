@@ -4,12 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using ProEventos.Persistence;
 using ProEventos.Persistence.Contextos;
 
 namespace ProEventos.Persistence.Migrations
 {
     [DbContext(typeof(ProEventosContext))]
-    [Migration("20220612152829_Initial")]
+    [Migration("20210215222944_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,7 +31,7 @@ namespace ProEventos.Persistence.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ImagemUrl")
+                    b.Property<string>("ImagemURL")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Local")
@@ -56,10 +57,10 @@ namespace ProEventos.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("DateFim")
+                    b.Property<DateTime?>("DataFim")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("DateInicio")
+                    b.Property<DateTime?>("DataInicio")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("EventoId")
@@ -90,6 +91,9 @@ namespace ProEventos.Persistence.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ImagemURL")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("MiniCurriculo")
                         .HasColumnType("TEXT");
 
@@ -97,9 +101,6 @@ namespace ProEventos.Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Telefone")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("imagemUrl")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -119,7 +120,7 @@ namespace ProEventos.Persistence.Migrations
 
                     b.HasIndex("PalestranteId");
 
-                    b.ToTable("PalestranteEventos");
+                    b.ToTable("PalestrantesEventos");
                 });
 
             modelBuilder.Entity("ProEventos.Domain.RedeSocial", b =>
@@ -169,7 +170,7 @@ namespace ProEventos.Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("ProEventos.Domain.Palestrante", "Palestrante")
-                        .WithMany()
+                        .WithMany("PalestrantesEventos")
                         .HasForeignKey("PalestranteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -186,7 +187,7 @@ namespace ProEventos.Persistence.Migrations
                         .HasForeignKey("EventoId");
 
                     b.HasOne("ProEventos.Domain.Palestrante", "Palestrante")
-                        .WithMany("RedeSociais")
+                        .WithMany("RedesSociais")
                         .HasForeignKey("PalestranteId");
 
                     b.Navigation("Evento");
@@ -205,7 +206,9 @@ namespace ProEventos.Persistence.Migrations
 
             modelBuilder.Entity("ProEventos.Domain.Palestrante", b =>
                 {
-                    b.Navigation("RedeSociais");
+                    b.Navigation("PalestrantesEventos");
+
+                    b.Navigation("RedesSociais");
                 });
 #pragma warning restore 612, 618
         }

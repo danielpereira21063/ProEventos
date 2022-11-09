@@ -9,14 +9,14 @@ using ProEventos.Persistence.Contextos;
 namespace ProEventos.Persistence.Migrations
 {
     [DbContext(typeof(ProEventosContext))]
-    [Migration("20221018001319_alterColumnNameDataInicioDataFimInTableLotes")]
-    partial class alterColumnNameDataInicioDataFimInTableLotes
+    [Migration("20211030230039_Adicionando-Identity")]
+    partial class AdicionandoIdentity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.17");
+                .HasAnnotation("ProductVersion", "5.0.2");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
@@ -114,7 +114,7 @@ namespace ProEventos.Persistence.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ImagemUrl")
+                    b.Property<string>("ImagemURL")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Local")
@@ -127,14 +127,14 @@ namespace ProEventos.Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Tema")
-                        .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Eventos");
                 });
@@ -192,7 +192,7 @@ namespace ProEventos.Persistence.Migrations
                     b.Property<int>("Funcao")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("ImagemUrl")
+                    b.Property<string>("ImagemURL")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("LockoutEnabled")
@@ -326,7 +326,7 @@ namespace ProEventos.Persistence.Migrations
 
                     b.HasIndex("PalestranteId");
 
-                    b.ToTable("PalestranteEventos");
+                    b.ToTable("PalestrantesEventos");
                 });
 
             modelBuilder.Entity("ProEventos.Domain.RedeSocial", b =>
@@ -392,6 +392,17 @@ namespace ProEventos.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ProEventos.Domain.Evento", b =>
+                {
+                    b.HasOne("ProEventos.Domain.Identity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ProEventos.Domain.Identity.UserRole", b =>
                 {
                     b.HasOne("ProEventos.Domain.Identity.Role", "Role")
@@ -442,7 +453,7 @@ namespace ProEventos.Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("ProEventos.Domain.Palestrante", "Palestrante")
-                        .WithMany("PalestranteEventos")
+                        .WithMany("PalestrantesEventos")
                         .HasForeignKey("PalestranteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -490,7 +501,7 @@ namespace ProEventos.Persistence.Migrations
 
             modelBuilder.Entity("ProEventos.Domain.Palestrante", b =>
                 {
-                    b.Navigation("PalestranteEventos");
+                    b.Navigation("PalestrantesEventos");
 
                     b.Navigation("RedesSociais");
                 });

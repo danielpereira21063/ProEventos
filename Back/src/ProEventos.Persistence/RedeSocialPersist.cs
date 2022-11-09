@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using ProEventos.Domain;
 using ProEventos.Persistence.Contextos;
 using ProEventos.Persistence.Contratos;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ProEventos.Persistence
 {
@@ -15,39 +17,43 @@ namespace ProEventos.Persistence
         {
             _context = context;
         }
-
-        public async Task<RedeSocial[]> GetAllByEventoIdAsync(int eventoId)
+        public async Task<RedeSocial> GetRedeSocialEventoByIdsAsync(int eventoId, int id) 
         {
-            IQueryable<RedeSocial> query = _context.RedesSociais
-                .AsNoTracking();
+            IQueryable<RedeSocial> query = _context.RedesSociais;
 
-            query = query.Where(x => x.EventoId == eventoId);
+            query = query.AsNoTracking()
+                         .Where(rs => rs.EventoId == eventoId &&
+                                      rs.Id == id);
+
+            return await query.FirstOrDefaultAsync();
+        }
+        public async Task<RedeSocial> GetRedeSocialPalestranteByIdsAsync(int palestranteId, int id) 
+        {
+            IQueryable<RedeSocial> query = _context.RedesSociais;
+
+            query = query.AsNoTracking()
+                         .Where(rs => rs.PalestranteId == palestranteId &&
+                                      rs.Id == id);
+
+            return await query.FirstOrDefaultAsync();
+        }
+        public async Task<RedeSocial[]> GetAllByEventoIdAsync(int eventoId) 
+        {
+            IQueryable<RedeSocial> query = _context.RedesSociais;
+
+            query = query.AsNoTracking()
+                         .Where(rs => rs.EventoId == eventoId);
 
             return await query.ToArrayAsync();
         }
-
-        public async Task<RedeSocial[]> GetAllByPalestranteIdAsync(int palestranteId)
+        public async Task<RedeSocial[]> GetAllByPalestranteIdAsync(int palestranteId) 
         {
-            IQueryable<RedeSocial> query = _context.RedesSociais
-                .AsNoTracking();
+            IQueryable<RedeSocial> query = _context.RedesSociais;
 
-            return await query.Where(x => x.EventoId == palestranteId).ToArrayAsync();
-        }
+            query = query.AsNoTracking()
+                         .Where(rs => rs.PalestranteId == palestranteId);
 
-        public async Task<RedeSocial> GetRedeSocialEventoByIdAsync(int eventoId, int id)
-        {
-            IQueryable<RedeSocial> query = _context.RedesSociais
-                .AsNoTracking();
-
-            return await _context.RedesSociais.FirstOrDefaultAsync(x => x.Id == id && x.EventoId == eventoId);
-        }
-
-        public async Task<RedeSocial> GetRedeSocialPalestranteByIdAsync(int palestranteId, int id)
-        {
-            IQueryable<RedeSocial> query = _context.RedesSociais
-            .AsNoTracking();
-
-            return await _context.RedesSociais.FirstOrDefaultAsync(x => x.Id == id && x.PalestranteId == palestranteId);
+            return await query.ToArrayAsync();
         }
     }
 }

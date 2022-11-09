@@ -1,10 +1,9 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { ValidatorField } from './../../../helpers/ValidatorField';
 import { AbstractControlOptions, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { User } from '../../../models/identity/User';
+import { AccountService } from '../../../services/account.service';
 import { Router } from '@angular/router';
-import { ValidatorField } from '@app/helpers/ValidatorField';
-import { User } from '@app/models/identity/User';
-import { AccountService } from '@app/services/account/account.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -13,50 +12,47 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./registration.component.scss']
 })
 export class RegistrationComponent implements OnInit {
-  public form!: FormGroup;
-  public user = {} as User;
 
-  public get f(): any {
-    return this?.form?.controls;
-  }
+  user = {} as User;
+  form!: FormGroup;
 
+  constructor(private fb: FormBuilder,
+              private accountService: AccountService,
+              private router: Router,
+              private toaster: ToastrService) { }
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private accountService: AccountService,
-    private router: Router,
-    private toaster: ToastrService
-  ) { }
+  get f(): any { return this.form.controls; }
 
   ngOnInit(): void {
     this.validation();
   }
 
-  public validation(): void {
-    const formOptions: AbstractControlOptions = {
-      validators: ValidatorField.MustMatch("password", "confirmePassword")
-    }
+  private validation(): void {
 
-    this.form = this.formBuilder.group({
-      primeiroNome: ["", [Validators.required]],
-      ultimoNome: ["", [Validators.required]],
-      email: ["", [Validators.required, Validators.email]],
-      userName: ["", [Validators.required]],
-      password: ["", [Validators.required, Validators.minLength(4)]],
-      confirmePassword: ["", Validators.required]
+    const formOptions: AbstractControlOptions = {
+      validators: ValidatorField.MustMatch('password', 'confirmePassword')
+    };
+
+    this.form = this.fb.group({
+      primeiroNome: ['', Validators.required],
+      ultimoNome: ['', Validators.required],
+      email: ['',
+        [Validators.required, Validators.email]
+      ],
+      userName: ['', Validators.required],
+      password: ['',
+        [Validators.required, Validators.minLength(4)]
+      ],
+      confirmePassword: ['', Validators.required],
     }, formOptions);
   }
 
-
-  public register(): void {
-    this.user = { ... this.form.value };
+  register(): void {
+    this.user = { ...this.form.value };
     this.accountService.register(this.user).subscribe(
-      () => {
-        this.router.navigateByUrl("/dashboard");
-      },
-      (error: HttpErrorResponse) => {
-        this.toaster.error(error.message, "Erro!");
-      }
+      () => this.router.navigateByUrl('/dashboard'),
+      (error: any) => this.toaster.error(error.error)
     )
   }
+
 }

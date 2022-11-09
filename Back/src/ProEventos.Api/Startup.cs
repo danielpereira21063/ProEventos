@@ -1,27 +1,28 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using ProEventos.API.Helpers;
 using ProEventos.Application;
 using ProEventos.Application.Contratos;
-using ProEventos.Domain.Identity;
 using ProEventos.Persistence;
 using ProEventos.Persistence.Contextos;
 using ProEventos.Persistence.Contratos;
+using AutoMapper;
 using System;
-using System.Collections.Generic;
+using Microsoft.Extensions.FileProviders;
 using System.IO;
-using System.Text;
+using Microsoft.AspNetCore.Http;
 using System.Text.Json.Serialization;
+using ProEventos.Domain.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Collections.Generic;
+using ProEventos.Api.Helpers;
 
 namespace ProEventos.API
 {
@@ -56,35 +57,35 @@ namespace ProEventos.API
             .AddEntityFrameworkStores<ProEventosContext>()
             .AddDefaultTokenProviders();
 
-
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters()
+                    .AddJwtBearer(options =>
                     {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"])),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
-                    };
-                });
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"])),
+                            ValidateIssuer = false,
+                            ValidateAudience = false
+                        };
+                    });
 
             services.AddControllers()
-                .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
-                .AddNewtonsoftJson(options =>
-                {
-                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                });
-
+                    .AddJsonOptions(options =>
+                        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
+                    )
+                    .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling =
+                        Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                    );
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddScoped<IEventoService, EventoService>();
-            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ILoteService, LoteService>();
+            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IPalestranteService, PalestranteService>();
             services.AddScoped<IRedeSocialService, RedeSocialService>();
+            services.AddScoped<IUtil, Util>();
 
             services.AddScoped<IGeralPersist, GeralPersist>();
             services.AddScoped<IEventoPersist, EventoPersist>();
@@ -93,21 +94,15 @@ namespace ProEventos.API
             services.AddScoped<IPalestrantePersist, PalestrantePersist>();
             services.AddScoped<IRedeSocialPersist, RedeSocialPersist>();
 
-
-
-            services.AddScoped<IUtil, Util>();
-
-
             services.AddCors();
-
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "ProEventos.Api", Version = "v1" });
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "ProEventos.API", Version = "v1" });
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Description = "JWT Authorization header usando Bearer. \n" +
-                                  "Entre 'Bearer' [espaço] então coloque seu token. \n" +
-                                  "Exemplo: 'Bearer 1234abcdef'",
+                    Description = @"JWT Authorization header usando Bearer.
+                                Entre com 'Bearer ' [espaÃ§o] entÃ£o coloque seu token.
+                                Exemplo: 'Bearer 12345abcdef'",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,
@@ -141,22 +136,19 @@ namespace ProEventos.API
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProEventos.Api v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProEventos.API v1"));
             }
+
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseCors(x =>
-            {
-                x.AllowAnyHeader();
-                x.AllowAnyMethod();
-                x.AllowAnyOrigin();
-            });
-
-            app.UseHttpsRedirection();
+            app.UseCors(x => x.AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .AllowAnyOrigin());
 
             app.UseStaticFiles(new StaticFileOptions()
             {

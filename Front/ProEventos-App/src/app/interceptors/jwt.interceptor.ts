@@ -6,46 +6,35 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { AccountService } from '@app/services/account/account.service';
-import { catchError } from 'rxjs/operators';
+import { User } from '../models/identity/User';
+import { AccountService } from '../services/account.service';
+import { catchError, take } from 'rxjs/operators';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
 
-  constructor(private accountService: AccountService) { }
+  constructor(private accountService: AccountService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    let currentUser = this.accountService.getCurrentUser();
+    let currentUser: User;
 
-    if (currentUser) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${currentUser?.token}`
-        }
-      });
-    }
+    this.accountService.currentUser$.pipe(take(1)).subscribe(user => {
+      currentUser = user
 
-    // this.accountService.currentUser$.pipe(take(1)).subscribe(
-    //   (user) => {
-    //     currentUser = user;
-    //     if (currentUser) {
-    //       request = request.clone({
-    //         setHeaders: {
-    //           Authorization: `Bearer ${currentUser.token}`
-    //         }
-    //       });
-    //     }
-    //   },
-    //   (error) => {
-    //     console.log(error)
-    //   });
-
-
+      if (currentUser) {
+        request = request.clone({
+            setHeaders: {
+              Authorization: `Bearer ${currentUser.token}`
+            }
+          }
+        );
+      }
+    });
 
     return next.handle(request).pipe(
-      catchError((error : any) =>{
-        if(error) {
-          localStorage.removeItem("user");
+      catchError(error => {
+        if (error) {
+          localStorage.removeItem('user')
         }
         return throwError(error);
       })

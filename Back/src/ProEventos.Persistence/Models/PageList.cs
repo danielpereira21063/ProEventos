@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProEventos.Persistence.Models
 {
@@ -13,11 +13,7 @@ namespace ProEventos.Persistence.Models
         public int PageSize { get; set; }
         public int TotalCount { get; set; }
 
-
-        public PageList()
-        {
-
-        }
+        public PageList() { }
 
         public PageList(List<T> items, int count, int pageNumber, int pageSize)
         {
@@ -28,11 +24,14 @@ namespace ProEventos.Persistence.Models
             AddRange(items);
         }
 
-        public static async Task<PageList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
+        public static async Task<PageList<T>> CreateAsync(
+            IQueryable<T> source, int pageNumber, int pageSize
+        )
         {
             var count = await source.CountAsync();
-            var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
-
+            var items = await source.Skip((pageNumber - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .ToListAsync();
             return new PageList<T>(items, count, pageNumber, pageSize);
         }
     }

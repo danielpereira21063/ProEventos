@@ -1,11 +1,11 @@
-﻿using AutoMapper;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using ProEventos.Application.Contratos;
 using ProEventos.Application.Dtos;
 using ProEventos.Domain;
 using ProEventos.Persistence.Contratos;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ProEventos.Application
 {
@@ -14,25 +14,119 @@ namespace ProEventos.Application
         private readonly IRedeSocialPersist _redeSocialPersist;
         private readonly IMapper _mapper;
 
-        public RedeSocialService(IRedeSocialPersist redeSocialPersist, IMapper mapper)
+        public RedeSocialService(IRedeSocialPersist redeSocialPersist,
+                           IMapper mapper)
         {
             _redeSocialPersist = redeSocialPersist;
             _mapper = mapper;
+        }
+
+        public async Task AddRedeSocial(int Id, RedeSocialDto model, bool isEvento)
+        {
+            try
+            {
+                var RedeSocial = _mapper.Map<RedeSocial>(model);
+                if (isEvento)
+                {
+                    RedeSocial.EventoId = Id;
+                    RedeSocial.PalestranteId = null;
+                } 
+                else
+                {
+                    RedeSocial.EventoId = null;
+                    RedeSocial.PalestranteId = Id;
+                }
+
+                _redeSocialPersist.Add<RedeSocial>(RedeSocial);
+
+                await _redeSocialPersist.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<RedeSocialDto[]> SaveByEvento(int eventoId, RedeSocialDto[] models)
+        {
+            try
+            {
+                var RedeSocials = await _redeSocialPersist.GetAllByEventoIdAsync(eventoId);
+                if (RedeSocials == null) return null;
+
+                foreach (var model in models)
+                {
+                    if (model.Id == 0)
+                    {
+                        await AddRedeSocial(eventoId, model, true);
+                    }
+                    else
+                    {
+                        var RedeSocial = RedeSocials.FirstOrDefault(RedeSocial => RedeSocial.Id == model.Id);
+                        model.EventoId = eventoId;
+
+                        _mapper.Map(model, RedeSocial);
+
+                        _redeSocialPersist.Update<RedeSocial>(RedeSocial);
+
+                        await _redeSocialPersist.SaveChangesAsync();
+                    }
+                }
+
+                var RedeSocialRetorno = await _redeSocialPersist.GetAllByEventoIdAsync(eventoId);
+
+                return _mapper.Map<RedeSocialDto[]>(RedeSocialRetorno);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<RedeSocialDto[]> SaveByPalestrante(int palestranteId, RedeSocialDto[] models)
+        {
+            try
+            {
+                var RedeSocials = await _redeSocialPersist.GetAllByPalestranteIdAsync(palestranteId);
+                if (RedeSocials == null) return null;
+
+                foreach (var model in models)
+                {
+                    if (model.Id == 0)
+                    {
+                        await AddRedeSocial(palestranteId, model, false);
+                    }
+                    else
+                    {
+                        var RedeSocial = RedeSocials.FirstOrDefault(RedeSocial => RedeSocial.Id == model.Id);
+                        model.PalestranteId = palestranteId;
+
+                        _mapper.Map(model, RedeSocial);
+
+                        _redeSocialPersist.Update<RedeSocial>(RedeSocial);
+
+                        await _redeSocialPersist.SaveChangesAsync();
+                    }
+                }
+
+                var RedeSocialRetorno = await _redeSocialPersist.GetAllByPalestranteIdAsync(palestranteId);
+
+                return _mapper.Map<RedeSocialDto[]>(RedeSocialRetorno);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<bool> DeleteByEvento(int eventoId, int redeSocialId)
         {
             try
             {
-                var redeSocial = await _redeSocialPersist.GetRedeSocialEventoByIdAsync(eventoId, redeSocialId);
+                var RedeSocial = await _redeSocialPersist.GetRedeSocialEventoByIdsAsync(eventoId, redeSocialId);
+                if (RedeSocial == null) throw new Exception("Rede Social por Evento para delete não encontrado.");
 
-                if (redeSocial == null)
-                {
-                    throw new Exception("Rede social não econtrada");
-                }
-
-                _redeSocialPersist.Delete<RedeSocial>(redeSocial);
-
+                _redeSocialPersist.Delete<RedeSocial>(RedeSocial);
                 return await _redeSocialPersist.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -45,15 +139,10 @@ namespace ProEventos.Application
         {
             try
             {
-                var redeSocial = await _redeSocialPersist.GetRedeSocialPalestranteByIdAsync(palestranteId, redeSocialId);
+                var RedeSocial = await _redeSocialPersist.GetRedeSocialPalestranteByIdsAsync(palestranteId, redeSocialId);
+                if (RedeSocial == null) throw new Exception("Rede Social por Palestrante para delete não encontrado.");
 
-                if (redeSocial == null)
-                {
-                    throw new Exception("Rede social não econtrada");
-                }
-
-                _redeSocialPersist.Delete<RedeSocial>(redeSocial);
-
+                _redeSocialPersist.Delete<RedeSocial>(RedeSocial);
                 return await _redeSocialPersist.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -66,9 +155,12 @@ namespace ProEventos.Application
         {
             try
             {
-                var redesSociais = await _redeSocialPersist.GetAllByEventoIdAsync(eventoId);
+                var RedeSocials = await _redeSocialPersist.GetAllByEventoIdAsync(eventoId);
+                if (RedeSocials == null) return null;
 
-                return _mapper.Map<RedeSocialDto[]>(redesSociais);
+                var resultado = _mapper.Map<RedeSocialDto[]>(RedeSocials);
+
+                return resultado;
             }
             catch (Exception ex)
             {
@@ -76,13 +168,16 @@ namespace ProEventos.Application
             }
         }
 
-        public async Task<RedeSocialDto[]> GetAllByPalestranteAsync(int palestranteId)
+        public async Task<RedeSocialDto[]> GetAllByPalestranteIdAsync(int palestranteId)
         {
             try
             {
-                var redesSociais = await _redeSocialPersist.GetAllByPalestranteIdAsync(palestranteId);
+                var RedeSocials = await _redeSocialPersist.GetAllByPalestranteIdAsync(palestranteId);
+                if (RedeSocials == null) return null;
 
-                return _mapper.Map<RedeSocialDto[]>(redesSociais);
+                var resultado = _mapper.Map<RedeSocialDto[]>(RedeSocials);
+
+                return resultado;
             }
             catch (Exception ex)
             {
@@ -90,13 +185,16 @@ namespace ProEventos.Application
             }
         }
 
-        public async Task<RedeSocialDto> GetRedeSocialEventoByIdsAsync(int eventoId, int redesocialId)
+        public async Task<RedeSocialDto> GetRedeSocialEventoByIdsAsync(int eventoId, int redeSocialId)
         {
             try
             {
-                var redesSocial = await _redeSocialPersist.GetRedeSocialEventoByIdAsync(eventoId, redesocialId);
+                var RedeSocial = await _redeSocialPersist.GetRedeSocialEventoByIdsAsync(eventoId, redeSocialId);
+                if (RedeSocial == null) return null;
 
-                return _mapper.Map<RedeSocialDto>(redesSocial);
+                var resultado = _mapper.Map<RedeSocialDto>(RedeSocial);
+
+                return resultado;
             }
             catch (Exception ex)
             {
@@ -108,9 +206,12 @@ namespace ProEventos.Application
         {
             try
             {
-                var redesSocial = await _redeSocialPersist.GetRedeSocialPalestranteByIdAsync(palestranteId, redeSocialId);
+                var RedeSocial = await _redeSocialPersist.GetRedeSocialPalestranteByIdsAsync(palestranteId, redeSocialId);
+                if (RedeSocial == null) return null;
 
-                return _mapper.Map<RedeSocialDto>(redesSocial);
+                var resultado = _mapper.Map<RedeSocialDto>(RedeSocial);
+
+                return resultado;
             }
             catch (Exception ex)
             {
@@ -118,110 +219,5 @@ namespace ProEventos.Application
             }
         }
 
-        public async Task<RedeSocialDto[]> SaveByEvento(int eventoId, RedeSocialDto[] models)
-        {
-            try
-            {
-                var redesSociais = await _redeSocialPersist.GetAllByEventoIdAsync(eventoId);
-
-                if (redesSociais == null)
-                {
-                    return null;
-                }
-
-                foreach (var model in models)
-                {
-                    if (model.Id == 0)
-                    {
-                        await AddRedeSocial(eventoId, model, true);
-                        continue;
-                    }
-
-                    var redeSocial = redesSociais.FirstOrDefault(x => x.Id == model.Id);
-                    model.EventoId = eventoId;
-
-                    _mapper.Map(model, redeSocial);
-
-                    _redeSocialPersist.Update(redeSocial);
-
-                }
-
-                await _redeSocialPersist.SaveChangesAsync();
-
-                var lotesRetorno = await _redeSocialPersist.GetAllByEventoIdAsync(eventoId);
-                return _mapper.Map<RedeSocialDto[]>(lotesRetorno);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public async Task<RedeSocialDto[]> SaveByPalestrante(int palestranteId, RedeSocialDto[] models)
-        {
-            try
-            {
-                var redesSociais = await _redeSocialPersist.GetAllByPalestranteIdAsync(palestranteId);
-
-                if (redesSociais == null)
-                {
-                    return null;
-                }
-
-                foreach (var model in models)
-                {
-                    if (model.Id == 0)
-                    {
-                        await AddRedeSocial(palestranteId, model, false);
-                        continue;
-                    }
-
-                    var redeSocial = redesSociais.FirstOrDefault(x => x.Id == model.Id);
-                    model.PalestranteId = palestranteId;
-
-                    _mapper.Map(model, redeSocial);
-
-                    _redeSocialPersist.Update<RedeSocial>(redeSocial);
-
-                }
-
-                await _redeSocialPersist.SaveChangesAsync();
-
-                var lotesRetorno = await _redeSocialPersist.GetAllByEventoIdAsync(palestranteId);
-                return _mapper.Map<RedeSocialDto[]>(lotesRetorno);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-
-        public async Task<RedeSocialDto> AddRedeSocial(int idPalestranteOuEvento, RedeSocialDto model, bool isEvento)
-        {
-            try
-            {
-                var redeSocial = _mapper.Map<RedeSocial>(model);
-
-                if (isEvento)
-                {
-                    redeSocial.EventoId = idPalestranteOuEvento;
-                    redeSocial.PalestranteId = null;
-                }
-                else
-                {
-                    redeSocial.PalestranteId = idPalestranteOuEvento;
-                    redeSocial.EventoId = null;
-                }
-
-                _redeSocialPersist.Add(redeSocial);
-
-                return _mapper.Map<RedeSocialDto>(redeSocial);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
     }
 }
