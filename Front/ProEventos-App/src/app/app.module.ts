@@ -92,7 +92,8 @@ defineLocale('pt-br', ptBrLocale);
       progressBar: true,
     }),
     NgxSpinnerModule,
-    NgxCurrencyModule,
+    NgxCurrencyModule
+    
   ],
   providers: [
     AccountService,

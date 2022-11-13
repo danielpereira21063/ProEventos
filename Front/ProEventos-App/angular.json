@@ -60,14 +60,7 @@
                   "maximumError": "10kb"
                 }
               ]
-            },
-            "staging": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.staging.ts"
-                }
-              ]
+            }
           }
         },
         "serve": {
@@ -138,7 +131,4 @@
   "cli": {
     "analytics": false
   }
-},
-"cli": {
-  "analytics": false
 }
