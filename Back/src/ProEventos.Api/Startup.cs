@@ -10,7 +10,6 @@ using ProEventos.Application.Contratos;
 using ProEventos.Persistence;
 using ProEventos.Persistence.Contextos;
 using ProEventos.Persistence.Contratos;
-using AutoMapper;
 using System;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
@@ -38,9 +37,12 @@ namespace ProEventos.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ProEventosContext>(
-                context => context.UseSqlite(Configuration.GetConnectionString("Default"))
-            );
+            var connectionString = Configuration.GetConnectionString("Default");
+            services.AddDbContext<ProEventosContext>(options =>
+            {
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b
+                .MigrationsAssembly(typeof(ProEventosContext).Assembly.FullName));
+            });
 
             services.AddIdentityCore<User>(options =>
             {
@@ -132,6 +134,7 @@ namespace ProEventos.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
