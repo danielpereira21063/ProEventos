@@ -26,6 +26,8 @@ namespace ProEventos.Api.Helpers
 
             var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, @$"Resources/{destino}", imageName);
 
+            if (!Directory.Exists(imagePath)) return null;
+
             using (var fileStream = new FileStream(imagePath, FileMode.Create))
             {
                 await imageFile.CopyToAsync(fileStream);
@@ -36,11 +38,13 @@ namespace ProEventos.Api.Helpers
 
         public void DeleteImage(string imageName, string destino)
         {
-            if (!string.IsNullOrEmpty(imageName)) 
+            if (!string.IsNullOrEmpty(imageName))
             {
                 var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, @$"Resources/{destino}", imageName);
-                if (System.IO.File.Exists(imagePath))
-                    System.IO.File.Delete(imagePath);
+                if (File.Exists(imagePath))
+                {
+                    File.Delete(imagePath);
+                }
             }
         }
     }

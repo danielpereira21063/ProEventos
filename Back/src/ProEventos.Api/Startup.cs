@@ -152,9 +152,16 @@ namespace ProEventos.API
                               .AllowAnyMethod()
                               .AllowAnyOrigin());
 
+
+            var folder = Path.Combine(Directory.GetCurrentDirectory(), "Resources");
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+
             app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Resources")),
+                FileProvider = new PhysicalFileProvider(folder),
                 RequestPath = new PathString("/Resources")
             });
 
