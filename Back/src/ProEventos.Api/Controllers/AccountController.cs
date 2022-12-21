@@ -44,13 +44,13 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar recuperar Usuário. Erro: {ex.Message}");
             }
         }
 
-        [HttpPost("Register")]
         [AllowAnonymous]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register(UserDto userDto)
         {
             try
@@ -76,8 +76,8 @@ namespace ProEventos.API.Controllers
             }
         }
 
-        [HttpPost("Login")]
         [AllowAnonymous]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login(UserLoginDto userLogin)
         {
             try
@@ -108,10 +108,10 @@ namespace ProEventos.API.Controllers
             try
             {
                 if (userUpdateDto.UserName != User.GetUserName())
-                    return Unauthorized("Usuário Inválido");
+                    return BadRequest("Usuário Inválido");
 
                 var user = await _accountService.GetUserByUserNameAsync(User.GetUserName());
-                if (user == null) return Unauthorized("Usuário Inválido");
+                if (user == null) return BadRequest("Usuário Inválido");
 
                 var userReturn = await _accountService.UpdateAccount(userUpdateDto);
                 if (userReturn == null) return NoContent();
@@ -125,7 +125,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar Atualizar Usuário. Erro: {ex.Message}");
             }
         }
@@ -150,7 +150,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar realizar upload de Foto do Usuário. Erro: {ex.Message}");
             }
         }

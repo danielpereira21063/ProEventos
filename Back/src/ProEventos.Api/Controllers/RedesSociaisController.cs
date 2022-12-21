@@ -62,7 +62,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar recuperar Rede Social por Palestrante. Erro: {ex.Message}");
             }
         }
@@ -73,7 +73,7 @@ namespace ProEventos.API.Controllers
             try
             {
                 if (!(await AutorEvento(eventoId)))
-                    return Unauthorized();
+                    return NoContent();
 
                 var redeSocial = await _redeSocialService.SaveByEvento(eventoId, models);
                 if (redeSocial == null) return NoContent();
@@ -82,7 +82,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar salvar Rede Social por Evento. Erro: {ex.Message}");
             }
         }
@@ -93,7 +93,7 @@ namespace ProEventos.API.Controllers
             try
             {
                 var palestrante = await _palestranteService.GetPalestranteByUserIdAsync(User.GetUserId());
-                if (palestrante == null) return Unauthorized();
+                if (palestrante == null) return NoContent();
 
                 var redeSocial = await _redeSocialService.SaveByPalestrante(palestrante.Id, models);
                 if (redeSocial == null) return NoContent();
@@ -102,7 +102,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar salvar Rede Social por Palestrante. Erro: {ex.Message}");
             }
         }
@@ -112,8 +112,8 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                if (!(await AutorEvento(eventoId)))
-                    return Unauthorized();
+                if (!await AutorEvento(eventoId))
+                    return NoContent();
 
                 var RedeSocial = await _redeSocialService.GetRedeSocialEventoByIdsAsync(eventoId, redeSocialId);
                 if (RedeSocial == null) return NoContent();
@@ -124,7 +124,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar deletar Rede Social por Evento. Erro: {ex.Message}");
             }
         }
@@ -135,7 +135,7 @@ namespace ProEventos.API.Controllers
             try
             {
                 var palestrante = await _palestranteService.GetPalestranteByUserIdAsync(User.GetUserId());
-                if (palestrante == null) return Unauthorized();
+                if (palestrante == null) return NoContent();
 
                 var RedeSocial = await _redeSocialService.GetRedeSocialPalestranteByIdsAsync(palestrante.Id, redeSocialId);
                 if (RedeSocial == null) return NoContent();
@@ -146,7 +146,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar deletar Rede Social por Palestrante. Erro: {ex.Message}");
             }
         }

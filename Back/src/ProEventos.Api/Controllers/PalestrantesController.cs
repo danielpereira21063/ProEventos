@@ -19,15 +19,9 @@ namespace ProEventos.API.Controllers
     public class PalestrantesController : ControllerBase
     {
         private readonly IPalestranteService _palestranteService;
-        private readonly IWebHostEnvironment _hostEnvironment;
-        private readonly IAccountService _accountService;
 
-        public PalestrantesController(IPalestranteService palestranteService,
-                                      IWebHostEnvironment hostEnvironment,
-                                      IAccountService accountService)
+        public PalestrantesController(IPalestranteService palestranteService)
         {
-            _hostEnvironment = hostEnvironment;
-            _accountService = accountService;
             _palestranteService = palestranteService;
         }
 
@@ -48,7 +42,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar recuperar palestrantes. Erro: {ex.Message}");
             }
         }
@@ -65,7 +59,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar recuperar palestrantes. Erro: {ex.Message}");
             }
         }
@@ -83,7 +77,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar adicionar eventos. Erro: {ex.Message}");
             }
         }
@@ -100,7 +94,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar atualizar eventos. Erro: {ex.Message}");
             }
         }

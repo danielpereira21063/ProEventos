@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using ProEventos.Application.Contratos;
 using Microsoft.AspNetCore.Http;
 using ProEventos.Application.Dtos;
-using System.IO;
-using Microsoft.AspNetCore.Hosting;
-using System.Linq;
 using ProEventos.API.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using ProEventos.Persistence.Models;
 using ProEventos.Api.Helpers;
+using System.IO;
+using System.Reflection;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ProEventos.API.Controllers
 {
@@ -20,17 +20,18 @@ namespace ProEventos.API.Controllers
     public class EventosController : ControllerBase
     {
         private readonly IEventoService _eventoService;
+        private readonly IHostingEnvironment _env;
         private readonly IUtil _util;
-        private readonly IAccountService _accountService;
 
         private readonly string _destino = "Images";
 
         public EventosController(IEventoService eventoService,
                                  IUtil util,
-                                 IAccountService accountService)
+                                 IAccountService accountService,
+                                 IHostingEnvironment env)
         {
             _util = util;
-            _accountService = accountService;
+            _env = env;
             _eventoService = eventoService;
         }
 
@@ -48,7 +49,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar recuperar eventos. Erro: {ex.Message}");
             }
         }
@@ -65,7 +66,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar recuperar eventos. Erro: {ex.Message}");
             }
         }
@@ -90,10 +91,32 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar realizar upload de foto do evento. Erro: {ex.Message}");
             }
         }
+
+        [HttpGet("image/get/{eventoId}")]
+        public async Task<IActionResult> GetEventoImage(int eventoId)
+        {
+            try
+            {
+                var evento = await _eventoService.GetEventoByIdAsync(User.GetUserId(), eventoId, true);
+                if (evento == null) return NoContent();
+
+                var imagePath = $"{_env.ContentRootPath}/Resources/Images/{evento?.ImagemURL ?? ""}";
+
+                var byteImage = System.IO.File.ReadAllBytes(imagePath);
+
+                return File(byteImage, "image/jpeg");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"Erro ao tentar buscar imagem");
+            }
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Post(EventoDto model)
@@ -107,7 +130,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar adicionar eventos. Erro: {ex.Message}");
             }
         }
@@ -124,7 +147,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar atualizar eventos. Erro: {ex.Message}");
             }
         }
@@ -149,7 +172,7 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar deletar eventos. Erro: {ex.Message}");
             }
         }

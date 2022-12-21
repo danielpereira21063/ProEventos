@@ -3382,25 +3382,34 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Daniel\\.nuget\\packages\\": {}
+    "C:\\Users\\Daniel\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Estudos\\ProjetosPessoais\\ProEventos\\Back\\src\\ProEventos.Api\\ProEventos.API.csproj",
+      "projectUniqueName": "C:\\Users\\Daniel\\Documents\\Estudos\\ProEventos\\Back\\src\\ProEventos.Api\\ProEventos.API.csproj",
       "projectName": "ProEventos.API",
-      "projectPath": "D:\\Estudos\\ProjetosPessoais\\ProEventos\\Back\\src\\ProEventos.Api\\ProEventos.API.csproj",
+      "projectPath": "C:\\Users\\Daniel\\Documents\\Estudos\\ProEventos\\Back\\src\\ProEventos.Api\\ProEventos.API.csproj",
       "packagesPath": "C:\\Users\\Daniel\\.nuget\\packages\\",
-      "outputPath": "D:\\Estudos\\ProjetosPessoais\\ProEventos\\Back\\src\\ProEventos.Api\\obj\\",
+      "outputPath": "C:\\Users\\Daniel\\Documents\\Estudos\\ProEventos\\Back\\src\\ProEventos.Api\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      ],
       "configFilePaths": [
         "C:\\Users\\Daniel\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 19.2.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\DevExpress 19.2\\Components\\System\\Components\\Packages": {},
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
@@ -3408,8 +3417,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\Estudos\\ProjetosPessoais\\ProEventos\\Back\\src\\ProEventos.Application\\ProEventos.Application.csproj": {
-              "projectPath": "D:\\Estudos\\ProjetosPessoais\\ProEventos\\Back\\src\\ProEventos.Application\\ProEventos.Application.csproj"
+            "C:\\Users\\Daniel\\Documents\\Estudos\\ProEventos\\Back\\src\\ProEventos.Application\\ProEventos.Application.csproj": {
+              "projectPath": "C:\\Users\\Daniel\\Documents\\Estudos\\ProEventos\\Back\\src\\ProEventos.Application\\ProEventos.Application.csproj"
             }
           }
         }
@@ -3480,7 +3489,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
       }
     }
   }
