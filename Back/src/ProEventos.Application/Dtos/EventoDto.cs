@@ -23,7 +23,7 @@ namespace ProEventos.Application.Dtos
 
         [RegularExpression(@".*\.(gif|jpe?g|bmp|png)$",
                            ErrorMessage = "Não é uma imagem válida. (gif, jpg, jpeg, bmp ou png)")]
-        public string ImagemURL { get; set; }
+        public byte[] Imagem { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [Phone(ErrorMessage = "O campo {0} está com número inválido")]

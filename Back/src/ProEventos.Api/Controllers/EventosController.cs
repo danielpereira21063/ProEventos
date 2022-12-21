@@ -11,6 +11,7 @@ using ProEventos.API.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using ProEventos.Persistence.Models;
 using ProEventos.Api.Helpers;
+using System.Drawing;
 
 namespace ProEventos.API.Controllers
 {
@@ -81,8 +82,10 @@ namespace ProEventos.API.Controllers
                 var file = Request.Form.Files[0];
                 if (file.Length > 0)
                 {
-                    _util.DeleteImage(evento.ImagemURL, _destino);
-                    evento.ImagemURL = await _util.SaveImage(file, _destino);
+                    var imageConverter = new ImageConverter();
+                    evento.Imagem = (byte[])imageConverter.ConvertTo(file, typeof(byte[]));
+                    //_util.DeleteImage(evento.Imagem, _destino);
+                    //evento.Imagem = await _util.SaveImage(file, _destino);
                 }
                 var EventoRetorno = await _eventoService.UpdateEvento(User.GetUserId(), eventoId, evento);
 
@@ -139,7 +142,7 @@ namespace ProEventos.API.Controllers
 
                 if (await _eventoService.DeleteEvento(User.GetUserId(), id))
                 {
-                    _util.DeleteImage(evento.ImagemURL, _destino);
+                    _util.DeleteImage(evento.Imagem, _destino);
                     return Ok(new { message = "Deletado" });
                 }
                 else
