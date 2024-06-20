@@ -4,7 +4,7 @@
 
 export const environment = {
   production: true,
-  apiURL: 'https://localhost:5010/',
+  apiURL: 'https://pro-eventos-api.danielsanchesdev.com.br/',
 };
 
 /*
